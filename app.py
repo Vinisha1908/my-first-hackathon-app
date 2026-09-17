@@ -1,38 +1,46 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import time
 
 # 1. Page Configuration
-st.set_page_config(page_title="My First Hackathon App", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="Hackathon Data Analyzer", page_icon="📈", layout="wide")
 
-# 2. Header and Introduction
-st.title("📊 Real-Time Hackathon Data Dashboard")
-st.write("Welcome Vinisha! This app demonstrates how quickly you can build a UI using pure Python.")
+st.title("📈 Real-World Tech Salary Analyzer")
+st.write("This dashboard loads real data using Pandas and showcases clean filters for judges.")
 
-# 3. Sidebar Configuration
-st.sidebar.header("Control Panel")
-data_points = st.sidebar.slider("Number of data points to generate:", min_value=10, max_value=200, value=50)
-chart_type = st.sidebar.selectbox("Choose Chart Type:", ["Line Chart", "Area Chart", "Bar Chart"])
+# 2. Load the Dataset using Pandas
+# Pandas converts the CSV into a "DataFrame" (a highly optimized table)
+df = pd.read_csv("tech_jobs.csv")
 
-# 4. Generate Mock Data using NumPy & Pandas
-# We generate a matrix of random numbers and format it into a data frame
-chart_data = pd.DataFrame(
-    np.random.randn(data_points, 3),
-    columns=['Feature A', 'Feature B', 'Feature C']
-)
+# 3. Sidebar Filter: Interactive Job Filter
+st.sidebar.header("Filter Settings")
+unique_jobs = df["Job_Title"].unique() # Extracts unique job roles from our data
+selected_job = st.sidebar.selectbox("Select a Job Role to Analyze:", unique_jobs)
 
-# 5. Display Interactive Elements based on User Selection
-st.subheader("⚙️ Live Metrics Visualizer")
+# 4. Filter the data table based on user selection
+filtered_df = df[df["Job_Title"] == selected_job]
 
-if chart_type == "Line Chart":
-    st.line_chart(chart_data)
-elif chart_type == "Area Chart":
-    st.area_chart(chart_data)
-else:
-    st.bar_chart(chart_data)
+# 5. Core Insights (Math Calculations via Pandas)
+st.subheader(f"📊 Insights for: {selected_job}s")
 
-# 6. Show the raw underlying dataset
-if st.checkbox("Show Raw Data Table"):
-    st.subheader("📋 Underlying Dataset")
-    st.dataframe(chart_data)
+# Create simple columns for quick-glance metrics
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    avg_salary = filtered_df["Salary_USD"].mean() # Calculates mathematical average
+    st.metric(label="Average Salary", value=f"${avg_salary:,.0f} USD")
+
+with col2:
+    highest_salary = filtered_df["Salary_USD"].max() # Finds the highest value
+    st.metric(label="Highest Salary Tracked", value=f"${highest_salary:,.0f} USD")
+
+with col3:
+    total_listings = len(filtered_df) # Counts rows matching the filter
+    st.metric(label="Total Job Postings", value=total_listings)
+
+# 6. Display the filtered data table visually
+st.write("### 📋 Matching Jobs")
+st.dataframe(filtered_df, use_container_width=True)
+
+# 7. Visualization: Salary Comparison Bar Chart across companies
+st.write("### 📊 Salary Comparison Across Companies")
+st.bar_chart(data=filtered_df, x="Company", y="Salary_USD")

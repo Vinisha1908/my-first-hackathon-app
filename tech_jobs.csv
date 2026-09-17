@@ -1,0 +1,9 @@
+Job_Title,Company,Location,Salary_USD,Remote_Friendly
+Data Scientist,Google,New York,145000,Yes
+Data Analyst,Netflix,Los Angeles,105000,No
+AI Engineer,OpenAI,San Francisco,190000,Yes
+Software Engineer,Microsoft,Seattle,130000,Yes
+Data Scientist,Meta,Menlo Park,155000,No
+AI Engineer,Google,Remote,175000,Yes
+Data Analyst,Amazon,Seattle,95000,Yes
+Software Engineer,Apple,Cupertino,140000,No
